@@ -39,3 +39,15 @@ if file_upload:
             st.warning("Entra com uma data válida ...")
         else:
            st.bar_chart(df_intituicao.loc[date])
+
+     df_data = df.groupby(by="Data")[["Valor"]].sum()
+     df_data["lag_1"] = df_data["Valor"].shift(1)
+     df_data["Diferenca Valor"] = df_data["Valor"] - df_data["lag_1"]
+     df_data["Média 6Meses de Diferenca abs."] =df_data["Diferenca Valor"].rolling(6).mean()
+     df_data["Média 12Meses de Diferena abs."]= df_data["Diferenca Valor"].rolling(12).mean()
+     df_data["Média 24Meses de Diferena abs."]= df_data["Diferenca Valor"].rolling(24).mean()
+     df_data["Média 6Meses de Diferenca relati."] =df_data["Diferenca Valor"].rolling(6).apply(lambda x:x[-1]/x[0])    
+     df_data["Média 12Meses de Diferena relati."]= df_data["Diferenca Valor"].rolling(12).apply(lambda x:x[-1]/x[0])
+     df_data["Média 24Meses de Diferena relati."]= df_data["Diferenca Valor"].rolling(24).apply(lambda x:x[-1]/x[0])
+
+     st.dataframe(df_data)
